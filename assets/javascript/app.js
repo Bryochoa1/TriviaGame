@@ -18,9 +18,7 @@ const timeGauge = document.getElementById("timeGauge");
 const progress = document.getElementById("progress");
 const scoreDiv = document.getElementById("scoreContainer");
 
-
-// elements
-
+// create our questions
 let questions = [{
     question: "Who won the 2019 Nba Championship?",
     imgSrc: "assets/images/nba-Championship.jpg",
@@ -44,17 +42,16 @@ let questions = [{
     correct: "B"
 }];
 
+// create some variables
 
-
-let lastQuestionIndex = questions.length - 1;
-let runningQuestionIndex = 0;
+const lastQuestion = questions.length - 1;
+let runningQuestion = 0;
 let count = 0;
 const questionTime = 10; // 10s
 const gaugeWidth = 150; // 150px
 const gaugeUnit = gaugeWidth / questionTime;
 let TIMER;
 let score = 0;
-
 
 // render a question
 function renderQuestion() {
@@ -79,8 +76,15 @@ function startQuiz() {
     TIMER = setInterval(renderCounter, 1000); // 1000ms = 1s
 }
 
+// render progress
+function renderProgress() {
+    for (let qIndex = 0; qIndex <= lastQuestion; qIndex++) {
+        progress.innerHTML += "<div class='prog' id=" + qIndex + "></div>";
+    }
+}
 
-// counter
+// counter render
+
 function renderCounter() {
     if (count <= questionTime) {
         counter.innerHTML = count;
@@ -88,7 +92,7 @@ function renderCounter() {
         count++
     } else {
         count = 0;
-
+        // change progress color to red
         answerIsWrong();
         if (runningQuestion < lastQuestion) {
             runningQuestion++;
@@ -101,13 +105,17 @@ function renderCounter() {
     }
 }
 
-// check answer
+// checkAnwer
 
 function checkAnswer(answer) {
     if (answer == questions[runningQuestion].correct) {
+        // answer is correct
         score++;
+        // change progress color to green
         answerIsCorrect();
     } else {
+        // answer is wrong
+        // change progress color to red
         answerIsWrong();
     }
     count = 0;
@@ -120,8 +128,8 @@ function checkAnswer(answer) {
         scoreRender();
     }
 }
-// progress
 
+// answer is correct
 function answerIsCorrect() {
     document.getElementById(runningQuestion).style.backgroundColor = "#0f0";
 }
@@ -137,6 +145,7 @@ function scoreRender() {
 
     // calculate the amount of question percent answered by the user
     const scorePerCent = Math.round(100 * score / questions.length);
+
 
     // choose the image based on the scorePerCent
     let img = (scorePerCent >= 80) ? "images/thumbs-up.png" :
